@@ -8,7 +8,7 @@ from db import db
 from temp_pepper import pepper
 
 
-class User(db.Model):
+class UserModel(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -22,7 +22,7 @@ class User(db.Model):
 
     def __init__(self, username, password, name, email, is_validated=False):
         self.username = username
-        self.password, self.salt = User.hash_password(password)
+        self.password, self.salt = UserModel.hash_password(password)
         self.name = name
         self.email = email
         self.is_validated = is_validated
@@ -33,8 +33,12 @@ class User(db.Model):
         db.session.commit()
 
     @classmethod
-    def hash_password(cls, password):
+    def retrieve_by_username(cls, username):
+        retrieved = cls.query.filter_by(username=username).first()
+        return retrieved
+
+    @classmethod
+    def hash_password(cls, password, salt=token_hex(16)):
         hash_fn = sha256()
-        salt = token_hex(16)
-        hash_fn.update((password+salt+pepper).encode())
+        hash_fn.update((str(password)+salt+pepper).encode())
         return hash_fn.hexdigest(), salt
