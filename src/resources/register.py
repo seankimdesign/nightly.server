@@ -10,7 +10,8 @@ class Register(Resource):
         try:
             new_user = UserModel(**user_json)
             new_user.save_to_db()
-        except TypeError:
+        except TypeError as e:
+            print(e)
             return {"message": "Invalid request"}, 400
         except Exception:
             return {"message": "Service error, please try again"}, 500

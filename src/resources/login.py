@@ -1,5 +1,7 @@
 from flask import request
 from flask_restful import Resource
+from flask_jwt_extended import create_access_token, create_refresh_token, get_jti
+
 from models.user import UserModel
 
 
@@ -13,8 +15,14 @@ class Login(Resource):
         if user:
             hashed, _ = UserModel.hash_password(given_password, user.salt)
             if hashed == user.password:
+                refresh_token = create_refresh_token(user)
+                refresh_jti = get_jti(refresh_token)
+                user.refresh_jti = refresh_jti
+                user.save_to_db()
                 return {
                     "message": "Login successful",
-                    "auth_token": "token goes here"
+                    "access_token": create_access_token(user),
+                    # TODO: Use Set-Cookie for improved security
+                    "refresh_token": refresh_token
                 }
         return {"message": "Username and password combination did not match any records"}, 401

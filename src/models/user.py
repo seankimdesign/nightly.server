@@ -19,6 +19,7 @@ class UserModel(db.Model):
     salt = db.Column(db.String(32))
     is_validated = db.Column(db.Boolean())
     created = db.Column(db.String(50))
+    refresh_jti = db.Column(db.String(36))
 
     def __init__(self, username, password, name, email, is_validated=False):
         self.username = username
@@ -27,10 +28,19 @@ class UserModel(db.Model):
         self.email = email
         self.is_validated = is_validated
         self.created = datetime.now()
+        self.refresh_jti = ""
 
     def save_to_db(self):
         db.session.add(self)
         db.session.commit()
+
+    def to_dict(self):
+        return {
+            "username": self.username,
+            "name": self.name,
+            "email": self.email,
+            "created": self.created,
+        }
 
     @classmethod
     def retrieve_by_username(cls, username):
@@ -38,7 +48,9 @@ class UserModel(db.Model):
         return retrieved
 
     @classmethod
-    def hash_password(cls, password, salt=token_hex(16)):
+    def hash_password(cls, password, salt=None):
+        if salt is None:
+            salt = token_hex(16)
         hash_fn = sha256()
         hash_fn.update((str(password)+salt+pepper).encode())
         return hash_fn.hexdigest(), salt
