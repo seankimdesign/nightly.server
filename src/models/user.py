@@ -44,8 +44,9 @@ class UserModel(db.Model):
 
     @classmethod
     def retrieve_by_username(cls, username):
-        retrieved = cls.query.filter_by(username=username).first()
-        return retrieved
+        if username:
+            retrieved = cls.query.filter_by(username=username).first()
+            return retrieved
 
     @classmethod
     def hash_password(cls, password, salt=None):

@@ -7,11 +7,13 @@ class Register(Resource):
 
     def post(self):
         user_json = request.json
+        user = UserModel.retrieve_by_username(user_json.get("username"))
+        if user:
+            return {"message": "Username already exists"}, 400
         try:
             new_user = UserModel(**user_json)
             new_user.save_to_db()
-        except TypeError as e:
-            print(e)
+        except TypeError:
             return {"message": "Invalid request"}, 400
         except Exception:
             return {"message": "Service error, please try again"}, 500
