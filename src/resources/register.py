@@ -6,13 +6,14 @@ import json
 
 class Register(Resource):
 
-    # TODO: Implement db-synchronized id incrementor
-    temp_id = 1
-
     def post(self):
-        user_data = json.loads(request.data)
-        new_user = User(Register.temp_id, **user_data)
-        new_user.save_to_db()
-        Register.temp_id += 1
-        return {"message": "User saved"}
+        user_json = request.json
+        try:
+            new_user = User(**user_json)
+            new_user.save_to_db()
+        except TypeError:
+            return {"message": "Invalid request"}, 400
+        except Exception:
+            return {"message": "Service error, please try again"}, 500
+        return {"message": "User record for {} saved".format(new_user.username)}, 201
 
