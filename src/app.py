@@ -32,7 +32,7 @@ def create_tables():
 
 api.add_resource(Register, '/register')
 api.add_resource(Login, '/login/<string:username>')
-api.add_resource(List, '/list', '/list/<string:username>')
+api.add_resource(List, '/list/<string:username>')
 
 if __name__ == '__main__':
     from db import db

@@ -11,11 +11,10 @@ from temp_pepper import pepper
 class UserModel(db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True)
-    password = db.Column(db.String(64))
+    username = db.Column(db.String(50), primary_key=True)
+    password = db.Column(db.String(80))
     name = db.Column(db.String(80))
-    email = db.Column(db.String(50), unique=True)
+    email = db.Column(db.String(80), unique=True)
     salt = db.Column(db.String(32))
     is_validated = db.Column(db.Boolean())
     created = db.Column(db.String(50))
@@ -52,11 +51,6 @@ class UserModel(db.Model):
     def retrieve_by_email(cls, email):
         if email:
             return cls.query.filter_by(email=email).first()
-
-    @classmethod
-    def retrieve_by_id(cls, _id):
-        if _id:
-            return cls.query.filter_by(id=_id).first()
 
     @classmethod
     def hash_password(cls, password, salt=None):

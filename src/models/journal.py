@@ -19,6 +19,14 @@ class JournalModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def to_dict(self):
+        return {
+            "user_id": self.user_id,
+            "date": self.date,
+            "content": self.content,
+            "private": self.private
+        }
+
     @classmethod
     def retrieve_by_user_id(cls, user_id):
         if user_id:
