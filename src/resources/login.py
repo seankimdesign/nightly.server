@@ -21,7 +21,7 @@ class Login(Resource):
                 user.save_to_db()
                 return {
                     "message": "Login successful",
-                    "access_token": create_access_token(user),
+                    "access_token": create_access_token(user, fresh=True),
                     # TODO: Use Set-Cookie for improved security
                     "refresh_token": refresh_token
                 }
