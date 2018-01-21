@@ -1,3 +1,5 @@
+import datetime
+
 from db import db
 
 
@@ -11,7 +13,7 @@ class JournalModel(db.Model):
 
     def __init__(self, username, date, content, private=False):
         self.username = username
-        self.date = date
+        self.date = str(date)
         self.content = content
         self.private = private
 
@@ -27,13 +29,27 @@ class JournalModel(db.Model):
             "private": self.private
         }
 
+    def __lt__(self, other):
+        return other.date < self.date
+
     @classmethod
     def retrieve_by_username(cls, username, count=None, daterange=10):
         if username:
-            print(count)
+            user_query = cls.query.filter_by(username=username)
+            date_descending = cls.date.desc()
             if count == 0:
-                return cls.query.filter_by(username=username).all()
+                return user_query.order_by(date_descending).all()
             elif count:
-                return cls.query.filter_by(username=username).limit(count).all()
+                return user_query.order_by(date_descending).limit(count).all()
             else:
-                pass
+                start_date = str(datetime.date.today() - datetime.timedelta(daterange))
+                return user_query.filter(cls.date >= start_date).order_by(date_descending).all()
+
+    @classmethod
+    def convert_date(cls, date_string):
+        if type(date_string) is datetime.date:
+            return date_string
+        datelist = date_string.split('-')
+        if len(datelist) == 3:
+            return datetime.date(*[int(dateunit) for dateunit in datelist])
+        raise ValueError('Invalid date string provided')

@@ -18,7 +18,6 @@ class List(Resource):
         print(entries)
         return List.format_response(entries, username, count=n, daterange=d)
 
-
     @classmethod
     def format_response(cls, entries, target, count=None, daterange=None):
         if entries and len(entries) > 0:
