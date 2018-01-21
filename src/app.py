@@ -5,6 +5,7 @@ from flask_jwt_extended import JWTManager
 from resources.register import Register
 from resources.login import Login
 from resources.list import List
+from resources.post import Post
 from authorization import initialize_jwt, jwt_configs
 
 # Establish JournalModel class definition prior to `users` table instantiation
@@ -33,6 +34,7 @@ def create_tables():
 api.add_resource(Register, '/register')
 api.add_resource(Login, '/login/<string:username>')
 api.add_resource(List, '/list/<string:username>')
+api.add_resource(Post, '/post')
 
 if __name__ == '__main__':
     from db import db

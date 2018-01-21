@@ -59,3 +59,8 @@ class UserModel(db.Model):
         hash_fn = sha256()
         hash_fn.update((str(password)+salt+pepper).encode())
         return hash_fn.hexdigest(), salt
+
+    @classmethod
+    def is_valid_payload(cls, payload):
+        required = ['username', 'password', 'name', 'email']
+        return all(key in payload for key in required)

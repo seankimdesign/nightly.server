@@ -11,11 +11,11 @@ class List(Resource):
         d = request.args.get('d')
         try:
             n = int(n) if n else None
-            d = int(d) if d else None
+            # TODO: Use configuration for default daterange
+            d = int(d) if d else 10
         except ValueError:
             return {"message": "Invalid request"}, 400
         entries = JournalModel.retrieve_by_username(username, count=n, daterange=d)
-        print(entries)
         return List.format_response(entries, username, count=n, daterange=d)
 
     @classmethod

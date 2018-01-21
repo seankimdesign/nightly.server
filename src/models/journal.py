@@ -21,6 +21,10 @@ class JournalModel(db.Model):
         db.session.add(self)
         db.session.commit()
 
+    def is_editable(self):
+        # TODO: Impose restritions on edit-allowed time limit and validate for well-formed date string
+        return True
+
     def to_dict(self):
         return {
             "username": self.username,
@@ -33,7 +37,7 @@ class JournalModel(db.Model):
         return other.date < self.date
 
     @classmethod
-    def retrieve_by_username(cls, username, count=None, daterange=10):
+    def retrieve_by_username(cls, username, count, daterange):
         if username:
             user_query = cls.query.filter_by(username=username)
             date_descending = cls.date.desc()
@@ -46,6 +50,11 @@ class JournalModel(db.Model):
                 return user_query.filter(cls.date >= start_date).order_by(date_descending).all()
 
     @classmethod
+    def retrieve_exact_post(cls, username, date):
+        if username and date:
+            return cls.query.filter_by(username=username, date=date).first()
+
+    @classmethod
     def convert_date(cls, date_string):
         if type(date_string) is datetime.date:
             return date_string
@@ -53,3 +62,8 @@ class JournalModel(db.Model):
         if len(datelist) == 3:
             return datetime.date(*[int(dateunit) for dateunit in datelist])
         raise ValueError('Invalid date string provided')
+
+    @classmethod
+    def is_valid_payload(cls, payload):
+        required = ['username', 'date', 'content']
+        return all(key in payload for key in required)
