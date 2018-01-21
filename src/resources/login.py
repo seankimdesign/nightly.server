@@ -19,6 +19,7 @@ class Login(Resource):
                 refresh_jti = get_jti(refresh_token)
                 user.refresh_jti = refresh_jti
                 user.save_to_db()
+                print([j.to_dict() for j in user.journals])
                 return {
                     "message": "Login successful",
                     "access_token": create_access_token(user, fresh=True),

@@ -17,16 +17,18 @@ class UserModel(db.Model):
     email = db.Column(db.String(80), unique=True)
     salt = db.Column(db.String(32))
     is_validated = db.Column(db.Boolean())
+    is_public = db.Column(db.Boolean())
     created = db.Column(db.String(50))
     refresh_jti = db.Column(db.String(36))
-    journals = db.relationship("JournalModel", backref="users", lazy=True, order_by="JournalModel.date")
+    journals = db.relationship("JournalModel", backref="users", lazy=True, order_by="JournalModel.date.desc()")
 
-    def __init__(self, username, password, name, email, is_validated=False):
+    def __init__(self, username, password, name, email, is_validated=False, is_public=False):
         self.username = username
         self.password, self.salt = UserModel.hash_password(password)
         self.name = name
         self.email = email
         self.is_validated = is_validated
+        self.is_public = is_public
         self.created = datetime.now()
         self.refresh_jti = ""
 

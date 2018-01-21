@@ -10,6 +10,7 @@ class JournalModel(db.Model):
     date = db.Column(db.String(10), primary_key=True)
     content = db.Column(db.Text)
     private = db.Column(db.Boolean)
+    timestamp = db.Column(db.DateTime)
 
     def __init__(self, username, date, content, private=False):
         self.username = username
@@ -18,6 +19,7 @@ class JournalModel(db.Model):
         self.private = private
 
     def save_to_db(self):
+        self.timestamp = datetime.datetime.utcnow()
         db.session.add(self)
         db.session.commit()
 

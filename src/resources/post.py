@@ -23,9 +23,7 @@ class Post(Resource):
             current_post = JournalModel(**journal_json)
         if not current_post.is_editable():
             return {"message": "Post is archived and may not be modified"}, 400
-        print('-----')
         try:
-            print(current_post.to_dict())
             current_post.save_to_db()
         except Exception:
             return {"message": "Service error, please try again"}, 500
