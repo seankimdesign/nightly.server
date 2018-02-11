@@ -22,7 +22,7 @@ class UserModel(db.Model):
     refresh_jti = db.Column(db.String(36))
     journals = db.relationship("JournalModel", backref="users", lazy=True, order_by="JournalModel.date.desc()")
 
-    def __init__(self, username, password, name, email, is_validated=False, is_public=False):
+    def __init__(self, username, password, email, name="", is_validated=False, is_public=False):
         self.username = username
         self.password, self.salt = UserModel.hash_password(password)
         self.name = name
@@ -64,5 +64,5 @@ class UserModel(db.Model):
 
     @classmethod
     def is_valid_payload(cls, payload):
-        required = ['username', 'password', 'name', 'email']
+        required = ['username', 'password', 'email']
         return all(key in payload for key in required)

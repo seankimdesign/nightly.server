@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+from flask_cors import CORS
 
 from resources.register import Register
 from resources.login import Login
@@ -21,6 +22,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 for key, value in jwt_configs.items():
     app.config[key] = value
 
+# TODO: Move into configuration
+cors = CORS(app, origins="http://localhost:7777")
 api = Api(app)
 jwt = JWTManager(app)
 initialize_jwt(jwt)
