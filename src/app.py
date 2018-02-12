@@ -42,4 +42,4 @@ api.add_resource(Post, '/post')
 if __name__ == '__main__':
     from db import db
     db.init_app(app)
-    app.run()
+    app.run(threaded=True)
