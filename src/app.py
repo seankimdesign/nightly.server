@@ -23,7 +23,7 @@ for key, value in jwt_configs.items():
     app.config[key] = value
 
 # TODO: Move into configuration
-cors = CORS(app, origins="http://localhost:7777")
+cors = CORS(app, origins="http://localhost:7777", supports_credentials="True")
 api = Api(app)
 jwt = JWTManager(app)
 initialize_jwt(jwt)
@@ -42,4 +42,4 @@ api.add_resource(Post, '/post')
 if __name__ == '__main__':
     from db import db
     db.init_app(app)
-    app.run(threaded=True)
+    app.run(host="0.0.0.0")
